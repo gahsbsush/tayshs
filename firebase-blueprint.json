@@ -1,0 +1,42 @@
+{
+  "entities": {
+    "Ad": {
+      "title": "Online Advertisements",
+      "description": "Dynamic ads served in-app in real-time.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique advertisement ID" },
+        "title": { "type": "string", "description": "Ad heading" },
+        "description": { "type": "string", "description": "Ad description or callout text" },
+        "imageUrl": { "type": "string", "description": "Optional banner image URL" },
+        "link": { "type": "string", "description": "Destination landing page URL" },
+        "buttonText": { "type": "string", "description": "Action button text" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Last updated" }
+      },
+      "required": ["id", "title", "description", "link"]
+    },
+    "AdRequest": {
+      "title": "Ad Request Messages",
+      "description": "Messages submitted by clients wishing to purchase ad space in the app.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique request ID" },
+        "name": { "type": "string", "description": "Client full name" },
+        "contact": { "type": "string", "description": "Phone number or email" },
+        "description": { "type": "string", "description": "Ad content or proposal details" },
+        "timestamp": { "type": "string", "format": "date-time", "description": "Moment of submission" }
+      },
+      "required": ["id", "name", "contact", "description"]
+    }
+  },
+  "firestore": {
+    "/ads/{adId}": {
+      "schema": "Ad",
+      "description": "Collection of served ads. Typically document 'active' represents the active banner."
+    },
+    "/adRequests/{requestId}": {
+      "schema": "AdRequest",
+      "description": "Message box where potential clients submit native ad placements."
+    }
+  }
+}

@@ -1,0 +1,21 @@
+node_modules/
+build/
+dist/
+coverage/
+.DS_Store
+*.log
+.env*
+!.env.example
+
+# Android / Capacitor
+android/app/build/
+android/app/src/main/assets/public/
+android/app/src/main/assets/capacitor.config.json
+android/build/
+android/.gradle/
+android/captures/
+android/local.properties
+android/.idea/
+*.iml
+.gradle/
+local.properties

@@ -1,0 +1,80 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global Safety Net (Pillar 1)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Reuseable Global Helpers (Pillar 3)
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Helper functions for entity validation (Pillar 2)
+    function isValidAd(data) {
+      return data.keys().hasAll(['id', 'title', 'description', 'link'])
+        && data.keys().size() <= 9
+        && data.id is string && data.id.size() <= 128
+        && data.title is string && data.title.size() <= 128
+        && data.description is string && data.description.size() <= 512
+        && data.link is string && data.link.size() <= 512
+        && (!('imageUrl' in data) || (data.imageUrl is string && data.imageUrl.size() <= 512))
+        && (!('buttonText' in data) || (data.buttonText is string && data.buttonText.size() <= 64))
+        && (!('expiresAt' in data) || (data.expiresAt is string && data.expiresAt.size() <= 128))
+        && (!('imageMode' in data) || (data.imageMode is string && data.imageMode.size() <= 32))
+        && (!('updatedAt' in data) || data.updatedAt is timestamp || data.updatedAt == null);
+    }
+
+    function isValidAdRequest(data) {
+      return data.keys().hasAll(['id', 'name', 'contact', 'description'])
+        && data.keys().size() <= 5
+        && data.id is string && data.id.size() <= 128
+        && data.name is string && data.name.size() <= 128
+        && data.contact is string && data.contact.size() <= 128
+        && data.description is string && data.description.size() <= 1024
+        && (!('timestamp' in data) || data.timestamp is timestamp);
+    }
+
+    // 1. Advertisements
+    match /ads/{adId} {
+      allow read: if true; // Any visitor can read served ads
+      
+      allow create: if isAdmin() && isValidId(adId) && isValidAd(request.resource.data);
+      allow update: if isAdmin() && isValidId(adId) && isValidAd(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    // 2. Client Ad Placement Requests (Contact box)
+    match /adRequests/{requestId} {
+      // Custom secure lists query (Pillar 8): Only admins can list or get requests
+      allow read: if isAdmin();
+      
+      // Guest users or developers can submit ad requests
+      allow create: if isValidId(requestId) && isValidAdRequest(request.resource.data);
+      
+      allow update, delete: if isAdmin();
+    }
+
+    // 3. Administrator records
+    match /admins/{adminId} {
+      allow read: if isSignedIn() && request.auth.uid == adminId;
+      allow write: if false; // Admins are configured out-of-band for security
+    }
+
+    // 4. Global Settings and Contact Info
+    match /settings/social_contacts {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}
