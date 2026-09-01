@@ -1,0 +1,99 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Vazirmatn:wght@300;400;500;700;900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Vazirmatn", "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+/* Custom fade-in and slide-up animation profiles */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Scrollbar customizations for glass containers */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+/* Smooth glass transition effects */
+.transition-glass {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Prevent double click zoom on mobile calendars */
+button, select {
+  touch-action: manipulation;
+}
+
+/* High fidelity swing animation for calendar bell */
+@keyframes bellSwing {
+  0%, 100% { transform: rotate(0); }
+  20% { transform: rotate(15deg); }
+  40% { transform: rotate(-15deg); }
+  60% { transform: rotate(10deg); }
+  80% { transform: rotate(-10deg); }
+}
+
+.animate-swing {
+  animation: bellSwing 1.5s ease-in-out infinite;
+}
+
+/* Custom scale rules for the entire app container without changing layout dimensions */
+.scale-sm .text-\[8px\] { font-size: 7.5px !important; }
+.scale-sm .text-\[9px\] { font-size: 8.5px !important; }
+.scale-sm .text-\[10px\] { font-size: 9.5px !important; }
+.scale-sm .text-\[11px\] { font-size: 10px !important; }
+.scale-sm .text-xs { font-size: 0.72rem !important; }
+.scale-sm .text-sm { font-size: 0.82rem !important; }
+.scale-sm .text-base { font-size: 0.92rem !important; }
+.scale-sm .text-lg { font-size: 1.07rem !important; }
+.scale-sm .text-xl { font-size: 1.18rem !important; }
+.scale-sm .text-2xl { font-size: 1.4rem !important; }
+.scale-sm .text-3xl { font-size: 1.7rem !important; }
+
+.scale-lg .text-\[8px\] { font-size: 9.5px !important; }
+.scale-lg .text-\[9px\] { font-size: 11px !important; }
+.scale-lg .text-\[10px\] { font-size: 11.5px !important; }
+.scale-lg .text-\[11px\] { font-size: 12.5px !important; }
+.scale-lg .text-xs { font-size: 0.84rem !important; }
+.scale-lg .text-sm { font-size: 0.96rem !important; }
+.scale-lg .text-base { font-size: 1.12rem !important; }
+.scale-lg .text-lg { font-size: 1.28rem !important; }
+.scale-lg .text-xl { font-size: 1.45rem !important; }
+.scale-lg .text-2xl { font-size: 1.68rem !important; }
+.scale-lg .text-3xl { font-size: 2.05rem !important; }
+
+
+
+/* Owner build: cleaner full-screen mobile presentation */
+html, body, #root { min-height: 100%; margin: 0; }
+body { overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+button, input, select, textarea { font-family: inherit; }
+@media (max-width: 640px) { body { min-height: 100dvh; } }

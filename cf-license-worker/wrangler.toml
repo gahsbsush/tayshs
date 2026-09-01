@@ -1,0 +1,9 @@
+name = "baharnaranj-license"
+main = "src/index.js"
+compatibility_date = "2024-11-01"
+
+# پس از ساخت namespace با دستور زیر، id واقعی را جایگزین کنید:
+#   npx wrangler kv namespace create LICENSES
+[[kv_namespaces]]
+binding = "LICENSES"
+id = "REPLACE_WITH_YOUR_KV_NAMESPACE_ID"
