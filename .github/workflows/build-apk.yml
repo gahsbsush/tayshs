@@ -1,0 +1,48 @@
+name: Build Android APK
+
+# این ورک‌فلو با هر پوش به شاخه main یا اجرای دستی از تب Actions فعال می‌شود
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: دریافت کد پروژه
+        uses: actions/checkout@v4
+
+      - name: نصب Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: نصب Java (لازم برای Gradle)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: نصب پکیج‌های پروژه
+        run: npm install
+
+      - name: ساخت نسخه وب (Vite build)
+        run: npm run build
+
+      - name: همگام‌سازی پروژه اندروید با Capacitor
+        run: npx cap sync android
+
+      - name: دادن مجوز اجرا به gradlew
+        run: chmod +x android/gradlew
+
+      - name: ساخت فایل APK (نسخه دیباگ - قابل نصب مستقیم)
+        working-directory: android
+        run: ./gradlew assembleDebug --no-daemon
+
+      - name: آپلود فایل APK به عنوان خروجی (Artifact)
+        uses: actions/upload-artifact@v4
+        with:
+          name: baharnaranj-calendar-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
